@@ -1,33 +1,29 @@
 import ReactDOM from 'react-dom'
 import React, {Component} from 'react';
-import { FlexContext, FlexBox } from './flex';
+import {FlexContext, FlexBox} from './flex';
 
-class Container extends Component {
-  render () {
-    return (
-      <g>
-        <rect
-          style={this.props.style}
-          fill={this.props.color || 'transparent'}
-          x="0"
-          y="0"
-          width={this.props.layout.width}
-          height={this.props.layout.height}
-        />
-        {this.props.children}
-      </g>
-    );
-  }
-}
+const Container = ({style, color, layout, children}) => (
+  <g>
+    <rect
+      style={style}
+      fill={color || 'transparent'}
+      x="0"
+      y="0"
+      width={layout.width}
+      height={layout.height}
+    />
+    {children}
+  </g>
+);
 
 const OuterContainer = FlexBox(Container, {
   width: '100%',
   height: '100%',
   stroke: 'red',
   strokeWidth: 2,
-  flexDirection:'row',
+  flexDirection: 'row',
   justifyContent: 'space-around',
-  alignItems:'center'
+  alignItems: 'center'
 });
 
 const BoxContainer = FlexBox(Container, {
@@ -50,28 +46,23 @@ const Box2 = FlexBox(Container, {
   width: 40
 });
 
-export default class App extends Component {
-  render () {
-
-    return (
-      <svg height="600" width="600">
-        <FlexContext>
-         <g>
-         <OuterContainer>
-           <BoxContainer>
+const App = () => (
+  <svg height="600" width="600">
+    <FlexContext>
+      <g>
+        <OuterContainer>
+          <BoxContainer>
             <Box1 />
             <Box2 />
-           </BoxContainer>
-           <BoxContainer>
+          </BoxContainer>
+          <BoxContainer>
             <Box1 />
-           </BoxContainer>
-         </OuterContainer>
-        </g>
-        </FlexContext>
-      </svg>
-    )
-  }
-}
+          </BoxContainer>
+        </OuterContainer>
+      </g>
+    </FlexContext>
+  </svg>
+);
 
 
 ReactDOM.render(<App />, document.getElementById('app'));
