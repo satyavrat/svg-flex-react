@@ -2,44 +2,18 @@ import ReactDOM from 'react-dom'
 import React, {Component} from 'react';
 import {FlexContext, FlexBox} from './flex';
 
-const Container = ({style, color, layout, children}) => (
-  <g>
-    <rect
-      style={style}
-      fill={color || 'transparent'}
-      x="0"
-      y="0"
-      width={layout.width}
-      height={layout.height}
-    />
-    {children}
-  </g>
-);
-
-const Text = ({style, color, layout, children}) => {
-
-  return (<foreignObject
-    style={style}
-    fill={color || 'transparent'}
-    x="0"
-    y="0"
-    width={layout.width}
-    height={layout.height}
-  >
-    <div style={{color: 'black', textAlign: 'center', overflow: 'hidden'}}>
-      {children}
-    </div>
-  </foreignObject>)
-};
+import Container from './components/container'
+import ScrollContainer from './components/scrollContainer'
+import Text from './components/text'
 
 const OuterContainer = FlexBox(Container, {
   width: 500,
   height: 500,
   stroke: 'red',
-  strokeWidth: 2,
+  strokeWidth: 1,
+  borderWidth: 1,
   flexDirection: 'row',
-  justifyContent: 'flex-start',
-  alignItems: 'center'
+  justifyContent: 'center'
 });
 
 const BoxContainer = FlexBox(Container, {
@@ -67,28 +41,52 @@ const LeftContainer = FlexBox(Container, {
   stroke: 'yellow',
   height: 40,
   width: 40,
-  flexShrink: 0
+  flexShrink: 0,
+  borderWidth: 1
 });
 const RightContainer = FlexBox(Container, {
   stroke: 'red',
   height: 40,
   width: 40,
-  flexShrink: 0
+  borderWidth: 1
 });
 const TextContainer = FlexBox(Text, {
-  stroke: 'yellow',
-  fill: 'red',
-  flexShrink: 0,
+  stroke: 'black',
+  fill: 'black'
 });
 
 const App = () => (
-  <svg height="-1" width="-1">
-    <FlexContext>
-      <OuterContainer id="outer">
-        <TextContainer id="text" />
-      </OuterContainer>
-    </FlexContext>
-  </svg>
+  <div style={{width:'100%',height: '100%', display: 'flex'}}>
+    <div className="outer" style={{display: 'flex',width: '500px',
+      height: '500px',
+      flexShrink: 0,
+      border: '1px solid red',
+      marginRight: '10px',
+      justifyContent: 'center'
+    }}>
+      <div className="left"
+      style={{
+        width: '50px',
+        height: '50px',
+        border: '1px solid yellow'
+      }}/>
+      <div className="middle">TEXT hello!</div>
+      <div className="right" style={{
+        width: '50px',
+        height: '50px',
+        border: '1px solid red'
+      }}></div>
+    </div>
+    <svg height="-1" width="-1">
+      <FlexContext>
+        <OuterContainer id="outer">
+          <LeftContainer/>
+          <TextContainer id="text">TEXT hello! TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello! TEXT hello! TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!TEXT hello!</TextContainer>
+          <RightContainer/>
+        </OuterContainer>
+      </FlexContext>
+    </svg>
+  </div>
 );
 
 

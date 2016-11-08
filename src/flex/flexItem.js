@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import isFlexBoxProperty from './flexbox-props';
-import ReactDOM from 'react-dom';
-
-
-import shallowEquals from 'shallow-equals';
+import * as dimensionUtils from '../dimensionUtils';
 
 export default (Composed, componentStyles = {}) => class extends Component {
   static displayName = 'FlexBox';
@@ -23,15 +20,32 @@ export default (Composed, componentStyles = {}) => class extends Component {
   constructor(props) {
     super(props);
 
-    const style = Object.assign(componentStyles, props.style);
-    const {svgStyles, flexStyles} = partitionStyles(style);
-    this.flexStyles = flexStyles;
     this.styleTools = {};
+
+    let {flexStyles, svgStyles} = this.computeDimensions(props);
 
     this.state = {
       layout: {top: 0, left: 0, width: 0, height: 0},
       styles: svgStyles
     };
+    this.flexStyles = flexStyles;
+  }
+
+  computeDimensions(props){
+    const style = Object.assign(componentStyles, props.style);
+    let {svgStyles, flexStyles} = partitionStyles(style);
+
+    if(!flexStyles.height && !flexStyles.width){
+      flexStyles = {
+        ...flexStyles,
+        ...dimensionUtils.getTextSize(props.children, {minHeight: 500, minWidth: 500})
+      }
+    }
+
+    return {
+      svgStyles,
+      flexStyles
+    }
   }
 
   componentWillMount () {
@@ -43,8 +57,13 @@ export default (Composed, componentStyles = {}) => class extends Component {
 
 
   componentWillReceiveProps(nextProps, nextContext) {
-    const {flexStyles} = partitionStyles(nextProps.style);
-    let needsLayout = nextContext.needsLayout;
+
+    let {flexStyles, svgStyles} = this.computeDimensions(nextProps);
+
+    this.setState({
+      styles: svgStyles
+    });
+    this.flexStyles = flexStyles;
 
     ({
       setStyle: this.styleTools.setStyle,
@@ -64,8 +83,6 @@ export default (Composed, componentStyles = {}) => class extends Component {
   render() {
     const transformation = `translate(${this.state.layout.left},${this.state.layout.top})`;
     const {style, ...other} = this.props;
-
-    console.log("layout", this.state.layout);
 
     return (
       <g transform={transformation}>

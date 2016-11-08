@@ -1,3 +1,3 @@
-export FlexBox from './flex';
+export FlexBox from './flexItem';
 
 export FlexContext from './flexContext'
